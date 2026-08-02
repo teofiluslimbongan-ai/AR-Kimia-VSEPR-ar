@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>AR Kimia — Scan Once</title>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif}
+#status{position:fixed;z-index:20;top:12px;left:12px;right:12px;padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.94);box-shadow:0 2px 10px rgba(0,0,0,.18);font-size:14px}
+#mol{font-weight:700;margin-top:4px}
+</style>
+</head>
+<body>
+<div id="status"><b>AR Kimia — Scan Once</b><div id="msg">Menyiapkan kamera...</div><div id="mol"></div></div>
+<a-scene mindar-image="imageTargetSrc:./targets.mind;maxTrack:1;autoStart:true;" color-space="sRGB" renderer="colorManagement:true;physicallyCorrectLights" vr-mode-ui="enabled:false" device-orientation-permission-ui="enabled:false">
+<a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
+<a-entity mindar-image-target="targetIndex:0" data-model="air-h2o.glb" data-name="H₂O — Air"></a-entity>
+<a-entity mindar-image-target="targetIndex:1" data-model="amonia-nh3.glb" data-name="NH₃ — Amonia"></a-entity>
+<a-entity mindar-image-target="targetIndex:2" data-model="co2.glb" data-name="CO₂ — Karbon dioksida"></a-entity>
+<a-entity mindar-image-target="targetIndex:3" data-model="metana-ch4.glb" data-name="CH₄ — Metana"></a-entity>
+<a-entity mindar-image-target="targetIndex:4" data-model="pcl5.glb" data-name="PCl₅ — Fosfor pentaklorida"></a-entity>
+<a-entity mindar-image-target="targetIndex:5" data-model="sf6.glb" data-name="SF₆ — Sulfur heksafluorida"></a-entity>
+</a-scene>
+<script>
+const msg=document.getElementById("msg"), mol=document.getElementById("mol");
+function addModel(entity){
+ if(entity.dataset.loaded==="1") return;
+ const model=document.createElement("a-gltf-model");
+ model.setAttribute("src",entity.dataset.model);
+ model.setAttribute("position","0 0 0.12");
+ model.setAttribute("scale","0.35 0.35 0.35");
+ model.setAttribute("animation","property:rotation;to:0 360 0;dur:8000;loop:true;easing:linear");
+ entity.appendChild(model);
+ entity.dataset.loaded="1";
+}
+const scene=document.querySelector("a-scene");
+scene.addEventListener("loaded",()=>{msg.textContent="Kamera siap. Arahkan ke gambar molekul.";});
+document.querySelectorAll("[mindar-image-target]").forEach(entity=>{
+ entity.addEventListener("targetFound",()=>{addModel(entity);msg.textContent="Target terdeteksi.";mol.textContent=entity.dataset.name;});
+ entity.addEventListener("targetLost",()=>{msg.textContent="Arahkan kamera ke gambar molekul.";mol.textContent="";});
+});
+</script>
+</body>
+</html>
