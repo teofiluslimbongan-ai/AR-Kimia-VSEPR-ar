@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>AR Kimia — 6 Molekul</title>
+
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
+  <!-- MindAR -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #info {
+      position: fixed;
+      z-index: 9999;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.92);
+      color: #111;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.35;
+      box-sizing: border-box;
+    }
+
+    #molecule {
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    a-scene {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="info">
+    <div><strong>AR Kimia — Scan Once → Explore 6 Molecules</strong></div>
+    <div id="status">Menyiapkan kamera...</div>
+    <div id="molecule"></div>
+  </div>
+
+  <a-scene
+    mindar-image="
+      imageTargetSrc: ./targets.mind;
+      maxTrack: 1;
+      uiLoading: yes;
+      uiScanning: yes;
+      uiError: yes;
+    "
+    color-space="sRGB"
+    renderer="colorManagement: true; physicallyCorrectLights: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+    embedded>
+
+    <a-assets timeout="30000">
+      <a-asset-item id="h2o" src="./air-h2o.glb"></a-asset-item>
+      <a-asset-item id="nh3" src="./amonia-nh3.glb"></a-asset-item>
+      <a-asset-item id="co2" src="./co2.glb"></a-asset-item>
+      <a-asset-item id="ch4" src="./metana-ch4.glb"></a-asset-item>
+      <a-asset-item id="pcl5" src="./pcl5.glb"></a-asset-item>
+      <a-asset-item id="sf6" src="./sf6.glb"></a-asset-item>
+    </a-assets>
+
+    <a-camera
+      position="0 0 0"
+      look-controls="enabled: false">
+    </a-camera>
+
+    <!-- Target 0 = H2O -->
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-gltf-model
+        src="#h2o"
+        position="0 0 0.15"
+        scale="0.35 0.35 0.35"
+        animation="property: rotation; to: 0 360 0; dur: 8000; loop: true; easing: linear">
+      </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 1 = NH3 -->
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-gltf-model
+        src="#nh3"
+        position="0 0 0.15"
+        scale="0.35 0.35 0.35"
+        animation="property: rotation; to: 0 360 0; dur: 8000; loop: true; easing: linear">
+      </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 2 = CO2 -->
+    <a-entity mindar-image-target="targetIndex: 2">
+      <a-gltf-model
+        src="#co2"
+        position="0 0 0.15"
+        scale="0.35 0.35 0.35"
+        animation="property: rotation; to: 0 360 0; dur: 8000; loop: true; easing: linear">
+      </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 3 = CH4 -->
+    <a-entity mindar-image-target="targetIndex: 3">
+      <a-gltf-model
+        src="#ch4"
+        position="0 0 0.15"
+        scale="0.35 0.35 0.35"
+        animation="property: rotation; to: 0 360 0; dur: 8000; loop: true; easing: linear">
+      </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 4 = PCl5 -->
+    <a-entity mindar-image-target="targetIndex: 4">
+      <a-gltf-model
+        src="#pcl5"
+        position="0 0 0.15"
+        scale="0.35 0.35 0.35"
+        animation="property: rotation; to: 0 360 0; dur: 8000; loop: true; easing: linear">
+      </a-gltf-model>
+    </a-entity>
+
+    <!-- Target 5 = SF6 -->
+    <a-entity mindar-image-target="targetIndex: 5">
+      <a-gltf-model
+        src="#sf6"
+        position="0 0 0.15"
+        scale="0.35 0.35 0.35"
+        animation="property: rotation; to: 0 360 0; dur: 8000; loop: true; easing: linear">
+      </a-gltf-model>
+    </a-entity>
+
+  </a-scene>
+
+  <script>
+    const status = document.getElementById("status");
+    const molecule = document.getElementById("molecule");
+
+    const names = [
+      "H₂O — Air",
+      "NH₃ — Amonia",
+      "CO₂ — Karbon dioksida",
+      "CH₄ — Metana",
+      "PCl₅ — Fosfor pentaklorida",
+      "SF₆ — Sulfur heksafluorida"
+    ];
+
+    const scene = document.querySelector("a-scene");
+
+    scene.addEventListener("loaded", function () {
+      status.textContent = "Kamera siap. Arahkan ke gambar molekul.";
+    });
+
+    scene.addEventListener("arReady", function () {
+      status.textContent = "AR siap. Arahkan kamera ke gambar molekul.";
+    });
+
+    scene.addEventListener("arError", function (event) {
+      status.textContent = "AR gagal dimulai. Periksa izin kamera dan koneksi internet.";
+      console.error("MindAR error:", event);
+    });
+
+    scene.addEventListener("targetFound", function (event) {
+      const target = event.target;
+      const index = target.getAttribute("mindar-image-target").targetIndex;
+
+      status.textContent = "Target terdeteksi.";
+      molecule.textContent = names[index] || "";
+    });
+
+    scene.addEventListener("targetLost", function () {
+      status.textContent = "Arahkan kamera ke gambar molekul.";
+      molecule.textContent = "";
+    });
+  </script>
+
+</body>
+</html>
